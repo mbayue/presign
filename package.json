@@ -1,7 +1,7 @@
 {
-  "name": "solana-scanner-bot",
+  "name": "presign",
   "version": "0.1.0",
-  "description": "Discord bot that simulates Solana blinks and Solana Pay links and warns before anyone signs",
+  "description": "Presign: a Discord bot that simulates Solana blinks and Solana Pay links and warns before anyone signs",
   "type": "module",
   "private": true,
   "scripts": {

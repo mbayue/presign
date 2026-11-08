@@ -1,6 +1,8 @@
-# Solana Scanner Bot
+# Presign
 
-A Discord bot that checks Solana blinks (Solana Actions) and Solana Pay links before anyone signs them. Discord servers are where wallet-drainer links spread: a post promises an airdrop, the link opens a wallet prompt, and the transaction quietly grants someone else control of your tokens. When a link is posted in a channel the bot watches, it fetches the exact transaction the link would ask a wallet to sign, simulates it without signing, and replies with a safety card marked 🟢, 🟡 or 🔴. Built for the MLH Solana Hackathon (November 6–8, 2026, AI track).
+**Check a Solana link before you sign it.**
+
+Presign is a Discord bot that checks Solana blinks (Solana Actions) and Solana Pay links before anyone signs them. Discord servers are where wallet-drainer links spread: a post promises an airdrop, the link opens a wallet prompt, and the transaction quietly grants someone else control of your tokens. When a link is posted in a channel the bot watches, it fetches the exact transaction the link would ask a wallet to sign, simulates it without signing, and replies with a safety card marked 🟢, 🟡 or 🔴. Built for the MLH Solana Hackathon (November 6–8, 2026, AI track).
 
 ## How it works
 

@@ -72,7 +72,7 @@ client.once(Events.ClientReady, async () => {
   process.stdout.write(`guild: ${guild.name}; channel: #${(channel as TextChannel).name}\n`);
 
   const demo = [
-    'Solana Scanner Bot live test (devnet demo links):',
+    'Presign live test (devnet demo links):',
     'solana-action:http://127.0.0.1:8787/api/actions/drainer?cluster=devnet',
     'solana-action:http://127.0.0.1:8787/api/actions/safe?cluster=devnet',
     'solana-action:http://127.0.0.1:8787/api/actions/injection?cluster=devnet',

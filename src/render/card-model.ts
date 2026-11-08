@@ -90,7 +90,7 @@ export const APPROVE_NOTE_LINE = 'The approval lets the spender take your tokens
 export const NO_FLAGS_LINE = 'No flags raised';
 export const NO_EXPLORER_LINE = 'No Explorer link available';
 export const AI_SUMMARY_LABEL = 'AI summary (AI-generated)';
-export const FOOTER = 'Simulated with a placeholder account. This scan does not guarantee safety.';
+export const FOOTER = 'Presign · Simulated with a placeholder account. This scan does not guarantee safety.';
 export const RAW_TRANSACTION_SUBJECT = 'Raw transaction';
 
 export type SubjectLabel = 'Link host' | 'Recipient' | 'Input';
