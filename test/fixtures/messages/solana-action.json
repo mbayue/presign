@@ -1,0 +1,9 @@
+{
+  "description": "solana-action: URIs, one literal and one percent-encoded inside <> delimiters",
+  "text": "Mint now: solana-action:https://actions.example.com/api/mint?amount=1 or <solana-action:https%3A%2F%2Factions.example.com%2Fapi%2Fdonate>!",
+  "actionsJson": {},
+  "expected": [
+    { "kind": "blink", "via": "solana-action", "target": "https://actions.example.com/api/mint?amount=1" },
+    { "kind": "blink", "via": "solana-action", "target": "https://actions.example.com/api/donate" }
+  ]
+}

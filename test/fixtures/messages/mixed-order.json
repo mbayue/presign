@@ -1,0 +1,16 @@
+{
+  "description": "Several forms in one message plus a 4th distinct candidate that must be ignored; duplicates count once",
+  "text": "1) solana:https%3A%2F%2Fpay.example.com%2Ftx 2) https://vote.example.net/proposal/42. 3) <https://vote.example.net/proposal/42> 4) solana:9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM 5) solana-action:https://ignored.example.com/api",
+  "actionsJson": {
+    "https://vote.example.net/proposal/42": {
+      "kind": "blink",
+      "via": "direct",
+      "actionUrl": "https://vote.example.net/proposal/42"
+    }
+  },
+  "expected": [
+    { "kind": "transaction-request", "target": "https://pay.example.com/tx" },
+    { "kind": "blink", "via": "direct", "target": "https://vote.example.net/proposal/42" },
+    { "kind": "transfer-request", "target": "9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM" }
+  ]
+}

@@ -28,6 +28,7 @@ export type AuthorityTypeName =
   | 'group member pointer'
   | 'scaled ui amount'
   | 'pause'
+  | 'permissioned burn'
   | 'unknown';
 
 /** Closed set of fetch-failure reasons safe to show to users. */
@@ -46,6 +47,7 @@ export type TransferBuildReason =
   | 'mint-wrong-owner'
   | 'mint-read-failed'
   | 'amount-overflow'
+  | 'amount-too-precise'
   | 'transaction-too-large';
 
 export type DecodeVersion = 'legacy' | 'v0' | 'v1';
@@ -71,6 +73,7 @@ const BUILD_REASON_TEXT: Record<TransferBuildReason, string> = {
   'mint-wrong-owner': 'the token mint is not owned by SPL Token or Token-2022',
   'mint-read-failed': 'the token mint could not be read',
   'amount-overflow': 'the amount is too large',
+  'amount-too-precise': 'the amount has more decimal places than the token allows',
   'transaction-too-large': 'the transaction would exceed 1,232 bytes',
 };
 

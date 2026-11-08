@@ -1,0 +1,9 @@
+{
+  "rules": [
+    { "pathPattern": "/buy", "apiPath": "/api/buy" },
+    { "pathPattern": "/actions/**", "apiPath": "/api/actions/**" },
+    { "pathPattern": "/donate/*", "apiPath": "https://api.shop.test/v1/donate/*" },
+    { "pathPattern": "https://shop.test/full/*", "apiPath": "/api/full/*" },
+    { "pathPattern": "/**", "apiPath": "https://api.shop.test/v1/**" }
+  ]
+}

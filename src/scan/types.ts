@@ -104,7 +104,9 @@ export type RuleId =
   | 'UNSUPPORTED_VERSION'
   | 'CLUSTER_FALLBACK_FAILED'
   | 'SCAN_FAILED'
-  | 'SCAN_TIMEOUT';
+  | 'SCAN_TIMEOUT'
+  /** Internal rule ID for transfer recording; never emitted as its own Flag. */
+  | 'TRANSFER_RECORDING';
 
 export interface Flag {
   ruleId: RuleId;

@@ -1,0 +1,6 @@
+{
+  "description": "dial.to URL whose action= parameter carries a solana-action: prefix",
+  "text": "Donate via https://dial.to/?action=solana-action%3Ahttps%3A%2F%2Fapi.example.org%2Fdonate%3Fto%3Dalice&cluster=mainnet.",
+  "actionsJson": {},
+  "expected": [{ "kind": "blink", "via": "dial.to", "target": "https://api.example.org/donate?to=alice" }]
+}

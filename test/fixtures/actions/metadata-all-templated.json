@@ -1,0 +1,12 @@
+{
+  "title": "Donate",
+  "description": "Pick an amount",
+  "label": "Donate",
+  "icon": "https://shop.test/icon.png",
+  "links": {
+    "actions": [
+      { "href": "/api/donate/{amount}", "label": "Custom" },
+      { "href": "/api/donate?to={recipient}&amount={amount}", "label": "Other" }
+    ]
+  }
+}

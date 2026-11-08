@@ -1,0 +1,6 @@
+{
+  "description": "Solana Pay Transaction_Request with a percent-encoded https link",
+  "text": "Checkout here -> solana:https%3A%2F%2Fpay.example.com%2Fcheckout%3Forder%3D7",
+  "actionsJson": {},
+  "expected": [{ "kind": "transaction-request", "target": "https://pay.example.com/checkout?order=7" }]
+}

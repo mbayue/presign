@@ -1,0 +1,3 @@
+{
+  "rules": [{ "pathPattern": "/blink/*", "apiPath": "/api/blink/*" }]
+}

@@ -1,0 +1,6 @@
+{
+  "description": "Solana Pay Transfer_Request with amount, label and memo",
+  "text": "Pay for coffee: solana:9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM?amount=0.5&label=Coffee%20Shop&memo=order-1, thanks",
+  "actionsJson": {},
+  "expected": [{ "kind": "transfer-request", "target": "9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM" }]
+}

@@ -1,0 +1,6 @@
+{
+  "description": "Mentions Solana but contains no link",
+  "text": "Solana is fast. I bought some SOL on solana today, gm!",
+  "actionsJson": {},
+  "expected": []
+}

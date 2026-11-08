@@ -1,0 +1,6 @@
+{
+  "description": "HTTPS URL whose origin has no actions.json (resolver returns not-blink)",
+  "text": "Read https://blog.example.com/posts/1 for details.",
+  "actionsJson": {},
+  "expected": []
+}

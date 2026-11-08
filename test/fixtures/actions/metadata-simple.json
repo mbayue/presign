@@ -1,0 +1,7 @@
+{
+  "type": "action",
+  "title": "Donate to the shop",
+  "description": "Send a small donation",
+  "label": "Donate",
+  "icon": "https://shop.test/icon.png"
+}

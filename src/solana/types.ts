@@ -25,6 +25,8 @@ export const PROGRAM_IDS = {
   ata: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
   memoV1: 'Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo',
   memoV2: 'MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr',
+  /** Newer memo program that @solana-program/memo 0.16 defaults to. */
+  memoV3: 'Memo4c2pN8afCj432Lb7RMVKi9PbQnnW7ewFFaV3oAH',
 } as const;
 
 // ---------------------------------------------------------------------------

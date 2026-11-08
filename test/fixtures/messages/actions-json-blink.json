@@ -1,0 +1,14 @@
+{
+  "description": "HTTPS Blink inside a Markdown link, resolved through the origin's actions.json",
+  "text": "Vote on [proposal 42](https://vote.example.net/proposal/42) before Friday",
+  "actionsJson": {
+    "https://vote.example.net/proposal/42": {
+      "kind": "blink",
+      "via": "actions-json",
+      "actionUrl": "https://vote.example.net/api/actions/proposal/42"
+    }
+  },
+  "expected": [
+    { "kind": "blink", "via": "actions-json", "target": "https://vote.example.net/api/actions/proposal/42" }
+  ]
+}

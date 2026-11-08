@@ -1,0 +1,6 @@
+{
+  "description": "Plain chat message without any URL",
+  "text": "gm everyone, see you at the meetup tomorrow",
+  "actionsJson": {},
+  "expected": []
+}
