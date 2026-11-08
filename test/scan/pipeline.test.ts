@@ -128,7 +128,14 @@ describe('funded placeholder (Req 16.6, 16.7, 19.3)', () => {
     const { deps, calls } = fixtureDeps(fundedDrainer, names);
     const r = await scanLink(await scanInputFor(DEMO_LINKS.drainer), {}, deps);
     expect(r.verdict).toBe('danger');
-    expect(flagsOf(r)).toEqual([{ ruleId: 'TOKEN_APPROVE', severity: 'danger', description: approveDescription }]);
+    expect(flagsOf(r)).toEqual([
+      {
+        ruleId: 'TOKEN_APPROVE',
+        severity: 'danger',
+        // The fixture's USDC account holds 5,000,000 base units (6 decimals) before signing.
+        description: `Grants ${DEMO.attacker} permission to spend from token account ${names.subjectAta}: UNLIMITED. It currently holds 5 of token ${DEMO.mint}.`,
+      },
+    ]);
     expect(r.flags.some((f) => f.ruleId === 'SIMULATION_FAILED')).toBe(false);
     expect(r.simulation.status).toBe('ok');
     // Only the fee leaves the wallet; the token balance is unchanged.

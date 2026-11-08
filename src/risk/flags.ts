@@ -80,12 +80,24 @@ const BUILD_REASON_TEXT: Record<TransferBuildReason, string> = {
 const mk = (ruleId: RuleId, severity: Severity, description: string): Flag => ({ ruleId, severity, description });
 
 export const flagTemplates = {
-  TOKEN_APPROVE: (p: { delegate: Address; tokenAccount: Address; raw: bigint; decimals?: number }): Flag =>
-    mk(
+  TOKEN_APPROVE: (p: {
+    delegate: Address;
+    tokenAccount: Address;
+    raw: bigint;
+    decimals?: number;
+    /** Balance of the token account before signing, when readable and non-zero. */
+    atRisk?: { amount: bigint; mint: Address };
+  }): Flag => {
+    const risk =
+      p.atRisk === undefined
+        ? ''
+        : ` It currently holds ${p.decimals === undefined ? `${p.atRisk.amount} base units` : formatUnits(p.atRisk.amount, p.decimals)} of token ${p.atRisk.mint}.`;
+    return mk(
       'TOKEN_APPROVE',
       'danger',
-      `Grants ${p.delegate} permission to spend from token account ${p.tokenAccount}: ${amountText(p.raw, p.decimals)}.`,
-    ),
+      `Grants ${p.delegate} permission to spend from token account ${p.tokenAccount}: ${amountText(p.raw, p.decimals)}.${risk}`,
+    );
+  },
 
   TOKEN_SET_AUTHORITY: (p: { authorityType: AuthorityTypeName; target: Address; newAuthority: Address | null }): Flag =>
     mk(

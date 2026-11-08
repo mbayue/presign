@@ -125,11 +125,13 @@ const tokenApprove: RiskRule = {
       if (ix.owner !== input.subject) continue;
       const mint = ix.mint ?? input.preTokenAccounts.get(ix.source)?.mint;
       const decimals = mintDecimals(input, mint) ?? ix.decimals;
+      const held = input.preTokenAccounts.get(ix.source);
+      const atRisk = held !== undefined && held.amount > 0n ? { atRisk: { amount: held.amount, mint: held.mint } } : {};
       out.add(
         flagTemplates.TOKEN_APPROVE(
           decimals === undefined
-            ? { delegate: ix.delegate, tokenAccount: ix.source, raw: ix.amount }
-            : { delegate: ix.delegate, tokenAccount: ix.source, raw: ix.amount, decimals },
+            ? { delegate: ix.delegate, tokenAccount: ix.source, raw: ix.amount, ...atRisk }
+            : { delegate: ix.delegate, tokenAccount: ix.source, raw: ix.amount, decimals, ...atRisk },
         ),
       );
     }
