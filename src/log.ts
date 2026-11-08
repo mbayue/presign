@@ -31,6 +31,7 @@ export type ErrorCode =
   | 'LOADER_FAILED'
   | 'LOGIN_REJECTED'
   | 'REGISTER_FAILED'
+  | 'EVENT_FAILED'
   | 'FLUSH_INCOMPLETE';
 
 export type EventCode = 'STARTUP' | 'READY' | 'SCAN_DONE' | 'SHUTDOWN' | 'GUILD_JOIN' | 'COMMANDS_REGISTERED';
@@ -47,6 +48,8 @@ export type LogFields = {
   durationMs?: number;
   /** Counts only (e.g. commands loaded, guilds registered, links scanned). */
   count?: number;
+  commandCount?: number;
+  guildCount?: number;
   /** Module file name for loader errors (a repo path, never user data). */
   file?: string;
   /** Discord API numeric error code. */
@@ -56,10 +59,10 @@ export type LogFields = {
 export type LogLevel = 'info' | 'warn' | 'error';
 export type Logger = (level: LogLevel, fields: LogFields) => void;
 
+/** JSON lines on stderr, so CLI stdout carries only the card. */
 export const log: Logger = (level, fields) => {
   const line = JSON.stringify({ ts: new Date().toISOString(), level, ...fields });
-  if (level === 'info') process.stdout.write(`${line}\n`);
-  else process.stderr.write(`${line}\n`);
+  process.stderr.write(`${line}\n`);
 };
 
 /** Returns only the hostname of a URL, or undefined when it does not parse. */
