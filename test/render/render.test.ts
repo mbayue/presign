@@ -1,4 +1,5 @@
 import { describe, expect, test } from 'bun:test';
+import { address } from '@solana/kit';
 import { embedLength, renderEmbed } from '../../src/discord/embed.ts';
 import { flagTemplates } from '../../src/risk/flags.ts';
 import {
@@ -140,7 +141,16 @@ describe('renderEmbed', () => {
     expect(embed.data.color).toBe(0xf1c40f);
     expect(embed.data.title).toBe('🟡 Caution');
     const names = (embed.data.fields ?? []).map((f) => f.name);
-    expect(names).toEqual(['Link host', 'Cluster', 'Balance changes', 'Flags', 'AI summary (AI-generated)', 'Explorer']);
+    expect(names).toEqual(['Flags', 'AI summary (AI-generated)', 'Balance changes', 'Link host · Cluster', 'Explorer']);
+  });
+
+  test('addresses in trusted lines are shortened on Discord', () => {
+    const real = address('AjTXzfxCuiDhuZhC6fdLmkS1fzmMbd1439ekrGqWVXLe');
+    const flag = flagTemplates.TOKEN_APPROVE({ delegate: real, tokenAccount: real, raw: 5n });
+    const embed = renderEmbed(toCardModel(scanResult({ verdict: 'danger', flags: [flag] })));
+    const value = embed.data.fields?.find((f) => f.name === 'Flags')?.value ?? '';
+    expect(value).not.toContain(real);
+    expect(value).toContain('AjTX…WVXLe');
   });
 
   test('the link title is quoted and labelled as the link\'s own words', () => {

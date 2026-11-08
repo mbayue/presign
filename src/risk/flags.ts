@@ -88,15 +88,12 @@ export const flagTemplates = {
     /** Balance of the token account before signing, when readable and non-zero. */
     atRisk?: { amount: bigint; mint: Address };
   }): Flag => {
-    const risk =
+    const amount = p.raw === U64_MAX ? 'an UNLIMITED amount' : amountText(p.raw, p.decimals);
+    const held =
       p.atRisk === undefined
         ? ''
-        : ` It currently holds ${p.decimals === undefined ? `${p.atRisk.amount} base units` : formatUnits(p.atRisk.amount, p.decimals)} of token ${p.atRisk.mint}.`;
-    return mk(
-      'TOKEN_APPROVE',
-      'danger',
-      `Grants ${p.delegate} permission to spend from token account ${p.tokenAccount}: ${amountText(p.raw, p.decimals)}.${risk}`,
-    );
+        : `, which holds ${p.decimals === undefined ? `${p.atRisk.amount} base units` : formatUnits(p.atRisk.amount, p.decimals)} tokens (mint ${p.atRisk.mint})`;
+    return mk('TOKEN_APPROVE', 'danger', `Lets ${p.delegate} spend ${amount} from your token account ${p.tokenAccount}${held}.`);
   },
 
   TOKEN_SET_AUTHORITY: (p: { authorityType: AuthorityTypeName; target: Address; newAuthority: Address | null }): Flag =>

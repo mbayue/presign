@@ -44,6 +44,10 @@ const flagText = (f: FlagLine): string =>
 
 const fieldLength = (f: Field): number => f.name.length + f.value.length;
 
+/** Base58 public keys (32–44 chars) in trusted text → `AjTX…WVXLe`. Discord only; the CLI keeps full addresses. */
+const ADDRESS_RE = /\b[1-9A-HJ-NP-Za-km-z]{32,44}\b/g;
+export const shortenAddresses = (s: string): string => s.replace(ADDRESS_RE, (a) => `${a.slice(0, 4)}…${a.slice(-5)}`);
+
 export function renderEmbed(card: CardModel, budget: number = CARD_BUDGET): EmbedBuilder {
   const title = `${card.emoji} ${card.label}`;
   // The link's own title is the scammer's words, so it is quoted and labelled as such.
@@ -51,59 +55,74 @@ export function renderEmbed(card: CardModel, budget: number = CARD_BUDGET): Embe
 
   const notes = [...card.clusterNotes];
   if (card.unsupportedClusterValue !== undefined) notes.push(`value: ${clean(card.unsupportedClusterValue)}`);
+  const clusterText = notes.length > 0 ? `${card.cluster} (${notes.join('; ')})` : card.cluster;
 
-  const head: Field[] = [
-    { name: card.subjectLabel, value: clean(card.subject) },
-    { name: 'Cluster', value: notes.length > 0 ? `${card.cluster} (${notes.join('; ')})` : card.cluster },
-  ];
-  const tail: Field[] = [];
-  if (card.linkedActionsNote !== undefined) tail.push({ name: 'Linked actions', value: card.linkedActionsNote });
-  if (card.aiSummary !== undefined) {
-    tail.push({ name: card.aiSummary.label, value: discordEscape(card.aiSummary.text, AI_SUMMARY_MAX) });
-  }
-  tail.push({
+  // Fixed-size fields; the order on the card is assembled at the end.
+  const location: Field = {
+    name: `${card.subjectLabel} · Cluster`,
+    value: `${shortenAddresses(clean(card.subject))} · ${clusterText}`,
+  };
+  const ai: Field | undefined =
+    card.aiSummary === undefined
+      ? undefined
+      : { name: card.aiSummary.label, value: discordEscape(card.aiSummary.text, AI_SUMMARY_MAX) };
+  const linked: Field | undefined =
+    card.linkedActionsNote === undefined ? undefined : { name: 'Linked actions', value: card.linkedActionsNote };
+  const explorer: Field = {
     name: 'Explorer',
     value: 'url' in card.explorer ? `[Open in Solana Explorer](${card.explorer.url})` : card.explorer.text,
-  });
+  };
+  const fixed = [location, explorer, ...(ai ? [ai] : []), ...(linked ? [linked] : [])];
 
-  const flagsFull = card.flagLines.map(flagText);
+  const flagsFull = card.flagLines.map((f) => shortenAddresses(flagText(f)));
+  const transferLines = card.transferLines.map(shortenAddresses);
+  const balanceLines = card.balanceLines.map(shortenAddresses);
   const flagsNeed = Math.min(flagsFull.join('\n').length, FLAG_RESERVE);
-  const transfersNeed = Math.min(card.transferLines.join('\n').length, TRANSFER_SHARE);
+  const transfersNeed = Math.min(transferLines.join('\n').length, TRANSFER_SHARE);
 
   let avail =
-    budget -
-    title.length -
-    (description?.length ?? 0) -
-    card.footer.length -
-    [...head, ...tail].reduce((n, f) => n + fieldLength(f), 0);
+    budget - title.length - (description?.length ?? 0) - card.footer.length - fixed.reduce((n, f) => n + fieldLength(f), 0);
 
   const balanceName = 'Balance changes';
   avail -= balanceName.length;
   const balances = fitLines(
-    card.balanceLines,
+    balanceLines,
     clamp(avail - flagsNeed - transfersNeed, 60, Math.min(BALANCE_SHARE, FIELD_VALUE_MAX)),
     (n) => `…and ${n} more balance changes`,
   );
   avail -= balances.length;
 
-  const middle: Field[] = [{ name: balanceName, value: balances }];
-  if (card.transferLines.length > 0) {
+  let transfers: Field | undefined;
+  if (transferLines.length > 0) {
     const name = 'Transfers';
     avail -= name.length;
-    const value = fitLines(card.transferLines, clamp(avail - flagsNeed, 40, TRANSFER_SHARE), (n) => `…and ${n} more transfers`);
+    const value = fitLines(transferLines, clamp(avail - flagsNeed, 40, TRANSFER_SHARE), (n) => `…and ${n} more transfers`);
     avail -= value.length;
-    middle.push({ name, value });
+    transfers = { name, value };
   }
 
   const flagsName = 'Flags';
   avail -= flagsName.length;
-  const flags = fitLines(flagsFull, clamp(avail, 30, FIELD_VALUE_MAX), (n) => `…and ${n} more flags`);
-  middle.push({ name: flagsName, value: flags });
+  const flags: Field = {
+    name: flagsName,
+    value: fitLines(flagsFull, clamp(avail, 30, FIELD_VALUE_MAX), (n) => `…and ${n} more flags`),
+  };
+
+  // Why first (flags, AI summary), then what moves, then where.
+  const ordered: Field[] = [
+    flags,
+    ...(ai ? [ai] : []),
+    { name: balanceName, value: balances },
+    ...(transfers ? [transfers] : []),
+    ...(linked ? [linked] : []),
+    location,
+    explorer,
+  ];
 
   const embed = new EmbedBuilder()
     .setColor(card.color)
     .setTitle(title)
-    .addFields(...head, ...middle, ...tail)
+    .addFields(...ordered)
     .setFooter({ text: card.footer });
   // No embed-level URL: Discord merges embeds in one message that share a URL,
   // so two links with the same transaction would collapse into one card. The

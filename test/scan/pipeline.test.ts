@@ -35,7 +35,7 @@ const fundedDrainer = fundedDrainerJson as RpcFixture;
 
 const names: Names = await fixtureNames();
 
-const approveDescription = `Grants ${DEMO.attacker} permission to spend from token account ${names.subjectAta}: UNLIMITED.`;
+const approveDescription = `Lets ${DEMO.attacker} spend an UNLIMITED amount from your token account ${names.subjectAta}.`;
 const SAFE_TRANSFER: TransferEntry = {
   asset: { kind: 'sol' },
   instruction: 'system-transfer',
@@ -133,7 +133,7 @@ describe('funded placeholder (Req 16.6, 16.7, 19.3)', () => {
         ruleId: 'TOKEN_APPROVE',
         severity: 'danger',
         // The fixture's USDC account holds 5,000,000 base units (6 decimals) before signing.
-        description: `Grants ${DEMO.attacker} permission to spend from token account ${names.subjectAta}: UNLIMITED. It currently holds 5 of token ${DEMO.mint}.`,
+        description: `Lets ${DEMO.attacker} spend an UNLIMITED amount from your token account ${names.subjectAta}, which holds 5 tokens (mint ${DEMO.mint}).`,
       },
     ]);
     expect(r.flags.some((f) => f.ruleId === 'SIMULATION_FAILED')).toBe(false);

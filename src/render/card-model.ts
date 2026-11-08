@@ -57,7 +57,7 @@ export interface CardModel {
 export const NO_BALANCE_LINE = 'No balance changes found';
 /** Shown when a TOKEN_APPROVE flag is raised: an approval moves nothing now, which can look harmless. */
 export const APPROVE_NO_BALANCE_LINE = 'No tokens move now, but the approval lets the spender take them later.';
-export const APPROVE_NOTE_LINE = 'The approval also lets the spender take your tokens later.';
+export const APPROVE_NOTE_LINE = 'The approval lets the spender take your tokens later.';
 export const NO_FLAGS_LINE = 'No flags raised';
 export const NO_EXPLORER_LINE = 'No Explorer link available';
 export const AI_SUMMARY_LABEL = 'AI summary (AI-generated)';
@@ -112,6 +112,18 @@ function subjectOf(link: ScanResult['link']): { label: SubjectLabel; value: stri
 function balanceLinesOf(result: ScanResult): string[] {
   const approves = result.flags.some((f) => f.ruleId === 'TOKEN_APPROVE');
   if (result.balanceChanges.length === 0) return [approves ? APPROVE_NO_BALANCE_LINE : NO_BALANCE_LINE];
+  const only = result.balanceChanges[0];
+  // An approve moves nothing; a lone small SOL decrease with no transfers is just the network fee.
+  if (
+    approves &&
+    result.balanceChanges.length === 1 &&
+    only !== undefined &&
+    only.asset.kind === 'sol' &&
+    only.rawDelta < 0n &&
+    result.transfers.length === 0
+  ) {
+    return [`Network fee only: ${formatUnits(-only.rawDelta, 9)} SOL`, APPROVE_NOTE_LINE];
+  }
   const lines = result.balanceChanges.map(balanceLine);
   return approves ? [...lines, APPROVE_NOTE_LINE] : lines;
 }
