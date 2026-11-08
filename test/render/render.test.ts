@@ -166,7 +166,7 @@ describe('renderEmbed', () => {
     const embed = renderEmbed(toCardModel(scanResult({ verdict: 'danger', flags: many, aiSummary: 'x'.repeat(300) })));
     expect(embedLength(embed)).toBeLessThanOrEqual(1_900);
     const value = embed.data.fields?.find((f) => f.name === 'Flags')?.value ?? '';
-    expect(value.startsWith('🔴 **TOKEN_APPROVE**')).toBe(true);
+    expect(value.startsWith('🔴 **Token spending approval**')).toBe(true);
     expect(value).toMatch(/…and \d+ more flags$/);
   });
 });

@@ -7,6 +7,7 @@
  */
 import { EmbedBuilder } from 'discord.js';
 import type { CardModel, FlagLine } from '../render/card-model.ts';
+import { RULE_LABELS } from '../render/card-model.ts';
 import { discordEscape, discordSanitizer as clean } from '../render/sanitize.ts';
 
 export const CARD_BUDGET = 1_900;
@@ -40,7 +41,7 @@ export function fitLines(lines: readonly string[], limit: number, more: (n: numb
 const SEVERITY_ICON = { danger: '🔴', caution: '🟡' } as const;
 
 const flagText = (f: FlagLine): string =>
-  f.severity === 'none' ? f.text : `${SEVERITY_ICON[f.severity]} **${f.ruleId}**: ${f.text}`;
+  f.severity === 'none' ? f.text : `${SEVERITY_ICON[f.severity]} **${RULE_LABELS[f.ruleId]}**: ${f.text}`;
 
 const fieldLength = (f: Field): number => f.name.length + f.value.length;
 

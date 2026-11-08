@@ -19,7 +19,36 @@ import type {
 } from '../scan/types.ts';
 
 export type CardEmoji = '🟢' | '🟡' | '🔴';
-export type CardLabel = 'No risky actions found' | 'Caution' | 'Danger';
+export type CardLabel = 'No risky actions found' | 'Caution' | 'Danger: do not sign';
+
+/** Plain-language names for rule IDs, shown on Discord cards. The CLI keeps the rule IDs. */
+export const RULE_LABELS: Record<RuleId, string> = {
+  TOKEN_APPROVE: 'Token spending approval',
+  TOKEN_SET_AUTHORITY: 'Ownership change',
+  TOKEN_CLOSE_TO_OTHER: 'Account closed to someone else',
+  MINT_PERMANENT_DELEGATE: 'Token issuer can take balances',
+  BALANCE_DRAINED: 'Whole balance moved',
+  UNKNOWN_PROGRAM: 'Unverified program',
+  SIMULATION_FAILED: 'Simulation failed',
+  SIMULATION_UNAVAILABLE: 'Simulation unavailable',
+  PERMANENT_DELEGATE_UNCHECKED: 'Token check incomplete',
+  ACCOUNTS_UNRESOLVED: 'Accounts not resolved',
+  AMOUNT_USER_CHOSEN: 'Amount not set',
+  INVALID_RESPONSE_RPC: 'Invalid RPC response',
+  INVALID_RESPONSE_LINK_SERVER: 'Invalid link response',
+  RULE_UNEVALUATED: 'Check could not run',
+  INPUT_REQUIRED: 'Needs input',
+  FETCH_FAILED: 'Transaction not retrieved',
+  DISALLOWED_URL: 'Blocked URL',
+  TRANSFER_BUILD_FAILED: 'Transfer not built',
+  DECODE_FAILED: 'Unreadable transaction',
+  TX_TOO_LARGE: 'Transaction too large',
+  UNSUPPORTED_VERSION: 'Unsupported transaction',
+  CLUSTER_FALLBACK_FAILED: 'Program not found',
+  SCAN_FAILED: 'Scan failed',
+  SCAN_TIMEOUT: 'Scan timed out',
+  TRANSFER_RECORDING: 'Transfer check',
+};
 
 export type FlagLine =
   | { severity: Severity; ruleId: RuleId; text: string }
@@ -69,7 +98,7 @@ export type SubjectLabel = 'Link host' | 'Recipient' | 'Input';
 export const VERDICT_STYLE: Record<Verdict, { emoji: CardEmoji; label: CardLabel; color: number }> = {
   safe: { emoji: '🟢', label: 'No risky actions found', color: 0x2ecc71 },
   caution: { emoji: '🟡', label: 'Caution', color: 0xf1c40f },
-  danger: { emoji: '🔴', label: 'Danger', color: 0xe74c3c },
+  danger: { emoji: '🔴', label: 'Danger: do not sign', color: 0xe74c3c },
 };
 
 const assetName = (asset: Asset): string => (asset.kind === 'sol' ? 'SOL' : asset.mint);
