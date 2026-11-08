@@ -117,7 +117,7 @@ describe('handleMessage', () => {
     const embeds = calls.replies[0]!.embeds as { data: { title?: string; fields?: { name: string; value: string }[] } }[];
     expect(embeds).toHaveLength(2);
     expect(embeds[1]!.data.title).toContain('Caution');
-    expect(embeds[1]!.data.fields?.find((f) => f.name === 'Flags')?.value).toContain('Scan timed out');
+    expect(embeds[1]!.data.fields?.find((f) => f.name === 'Flags')?.value).toContain('**Timeout**');
     expect(slowSignal?.aborted).toBe(true);
     expect(logs.codes()).toContain('SCAN_TIMEOUT');
 

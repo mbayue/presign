@@ -29,8 +29,8 @@ export const RULE_LABELS: Record<RuleId, string> = {
   MINT_PERMANENT_DELEGATE: 'Token issuer can take balances',
   BALANCE_DRAINED: 'Whole balance moved',
   UNKNOWN_PROGRAM: 'Unverified program',
-  SIMULATION_FAILED: 'Simulation failed',
-  SIMULATION_UNAVAILABLE: 'Simulation unavailable',
+  SIMULATION_FAILED: 'Simulation',
+  SIMULATION_UNAVAILABLE: 'Simulation',
   PERMANENT_DELEGATE_UNCHECKED: 'Token check incomplete',
   ACCOUNTS_UNRESOLVED: 'Accounts not resolved',
   AMOUNT_USER_CHOSEN: 'Amount not set',
@@ -46,7 +46,7 @@ export const RULE_LABELS: Record<RuleId, string> = {
   UNSUPPORTED_VERSION: 'Unsupported transaction',
   CLUSTER_FALLBACK_FAILED: 'Program not found',
   SCAN_FAILED: 'Scan failed',
-  SCAN_TIMEOUT: 'Scan timed out',
+  SCAN_TIMEOUT: 'Timeout',
   TRANSFER_RECORDING: 'Transfer check',
 };
 

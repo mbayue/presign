@@ -21,9 +21,9 @@ import { createScanner } from '../src/scan/pipeline.ts';
 import { createMemorySettingsStore } from '../src/settings/store.ts';
 import { defaultSettings } from '../src/settings/types.ts';
 
-const [guildId, channelId, minutesArg] = process.argv.slice(2);
+const [guildId, channelId, minutesArg, ...customLinks] = process.argv.slice(2);
 if (!guildId || !channelId) {
-  process.stderr.write('Usage: bun scripts/live-test.ts <guildId> <channelId> [minutes]\n');
+  process.stderr.write('Usage: bun scripts/live-test.ts <guildId> <channelId> [minutes] [link ...]\n');
   process.exit(2);
 }
 const minutes = Number(minutesArg ?? '15');
@@ -71,12 +71,15 @@ client.once(Events.ClientReady, async () => {
   }
   process.stdout.write(`guild: ${guild.name}; channel: #${(channel as TextChannel).name}\n`);
 
-  const demo = [
-    'Presign live test (devnet demo links):',
-    'solana-action:http://127.0.0.1:8787/api/actions/drainer?cluster=devnet',
-    'solana-action:http://127.0.0.1:8787/api/actions/safe?cluster=devnet',
-    'solana-action:http://127.0.0.1:8787/api/actions/injection?cluster=devnet',
-  ].join('\n');
+  const demo =
+    customLinks.length > 0
+      ? ['Presign live test:', ...customLinks].join('\n')
+      : [
+          'Presign live test (devnet demo links):',
+          'solana-action:http://127.0.0.1:8787/api/actions/drainer?cluster=devnet',
+          'solana-action:http://127.0.0.1:8787/api/actions/safe?cluster=devnet',
+          'solana-action:http://127.0.0.1:8787/api/actions/injection?cluster=devnet',
+        ].join('\n');
   const sent = await (channel as TextChannel).send({ content: demo, allowedMentions: { parse: [] } });
   // The bot's own post would be ignored by the bot-author gate; run the real handler on it anyway.
   const adapted = { ...adaptMessage(sent as Message<true>), authorIsBot: false };
