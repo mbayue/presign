@@ -1,0 +1,42 @@
+{
+  "description": "Funded placeholder holding 5 devnet USDC in its ATA: the Approve succeeds and leaves the attacker as an unlimited delegate.",
+  "preAccounts": {
+    "$subject": { "owner": "system", "lamports": 50000000 },
+    "$subjectAta": {
+      "owner": "spl-token",
+      "lamports": 2039280,
+      "data": { "kind": "token-account", "mint": "$usdcMint", "owner": "$subject", "amount": "5000000" }
+    },
+    "$usdcMint": {
+      "owner": "spl-token",
+      "lamports": 1461600,
+      "data": { "kind": "mint", "decimals": 6, "supply": "1000000000000" }
+    }
+  },
+  "simulateTransaction": {
+    "err": null,
+    "logs": [
+      "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA invoke [1]",
+      "Program log: Instruction: Approve",
+      "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA consumed 2904 of 200000 compute units",
+      "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA success"
+    ],
+    "fee": 5000,
+    "unitsConsumed": 2904,
+    "accounts": {
+      "$subject": { "owner": "system", "lamports": 49995000 },
+      "$subjectAta": {
+        "owner": "spl-token",
+        "lamports": 2039280,
+        "data": {
+          "kind": "token-account",
+          "mint": "$usdcMint",
+          "owner": "$subject",
+          "amount": "5000000",
+          "delegate": "$attacker",
+          "delegatedAmount": "18446744073709551615"
+        }
+      }
+    }
+  }
+}

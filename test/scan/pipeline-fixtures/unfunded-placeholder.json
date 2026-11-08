@@ -1,0 +1,11 @@
+{
+  "description": "Unfunded default placeholder on devnet: every pre-state account is missing and the runtime rejects the fee payer with AccountNotFound.",
+  "preAccounts": {},
+  "simulateTransaction": {
+    "err": "AccountNotFound",
+    "logs": [],
+    "fee": null,
+    "unitsConsumed": 0,
+    "accounts": null
+  }
+}

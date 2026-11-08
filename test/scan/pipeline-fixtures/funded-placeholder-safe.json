@@ -1,0 +1,19 @@
+{
+  "description": "Funded placeholder (0.05 SOL) running the safe tip: 1,000,000 lamports to the demo recipient plus a 5,000 lamport fee.",
+  "preAccounts": {
+    "$subject": { "owner": "system", "lamports": 50000000 }
+  },
+  "simulateTransaction": {
+    "err": null,
+    "logs": [
+      "Program 11111111111111111111111111111111 invoke [1]",
+      "Program 11111111111111111111111111111111 success"
+    ],
+    "fee": 5000,
+    "unitsConsumed": 150,
+    "accounts": {
+      "$subject": { "owner": "system", "lamports": 48995000 },
+      "$safeRecipient": { "owner": "system", "lamports": 1000000 }
+    }
+  }
+}

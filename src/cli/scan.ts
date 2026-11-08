@@ -5,7 +5,7 @@
  * Exit codes: 0 for any Scan_Result (🟢, 🟡 or 🔴), 1 when no result could be
  * produced, 2 for usage errors.
  */
-import { parseConfig, type Config } from '../config.ts';
+import { parseConfig, processEnv, type Config } from '../config.ts';
 import { createActionsJsonResolver } from '../fetch/actions-json.ts';
 import type { ActionsJsonResolver } from '../fetch/types.ts';
 import { classifySyntactic } from '../links/detector.ts';
@@ -114,7 +114,7 @@ export async function runCli(
     return 2;
   }
 
-  const parsed = parseConfig(opts.env ?? process.env);
+  const parsed = parseConfig(opts.env ?? processEnv());
   if ('errors' in parsed) {
     for (const e of parsed.errors) io.stderr(`Invalid configuration: ${e.variable} ${e.reason}\n`);
     return 1;

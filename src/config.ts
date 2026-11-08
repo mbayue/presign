@@ -113,8 +113,11 @@ export function parseConfig(env: Record<string, string | undefined>): { config: 
   };
 }
 
+/** The process environment, for callers that pass it to `parseConfig` (the only env access point, Req 17.1). */
+export const processEnv = (): Record<string, string | undefined> => process.env;
+
 /** Reads the environment once. On invalid values, names each variable on stderr and exits non-zero. */
-export function loadConfig(env: Record<string, string | undefined> = process.env): Config {
+export function loadConfig(env: Record<string, string | undefined> = processEnv()): Config {
   const parsed = parseConfig(env);
   if ('errors' in parsed) {
     for (const e of parsed.errors) process.stderr.write(`Invalid configuration: ${e.variable} ${e.reason}\n`);
