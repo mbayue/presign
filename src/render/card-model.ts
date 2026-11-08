@@ -32,6 +32,8 @@ export interface CardModel {
   color: number;
   /** Raw link text (Untrusted) or null for a raw transaction. Sanitize before display. */
   source: string | null;
+  /** Field label for `subject`: "Link host", "Recipient", or "Input". */
+  subjectLabel: SubjectLabel;
   /** Hostname, recipient, or "Raw transaction". Sanitize before display. */
   subject: string;
   cluster: Cluster;
@@ -53,11 +55,16 @@ export interface CardModel {
 }
 
 export const NO_BALANCE_LINE = 'No balance changes found';
+/** Shown when a TOKEN_APPROVE flag is raised: an approval moves nothing now, which can look harmless. */
+export const APPROVE_NO_BALANCE_LINE = 'No tokens move now, but the approval lets the spender take them later.';
+export const APPROVE_NOTE_LINE = 'The approval also lets the spender take your tokens later.';
 export const NO_FLAGS_LINE = 'No flags raised';
 export const NO_EXPLORER_LINE = 'No Explorer link available';
 export const AI_SUMMARY_LABEL = 'AI summary (AI-generated)';
 export const FOOTER = 'Simulated with a placeholder account. This scan does not guarantee safety.';
 export const RAW_TRANSACTION_SUBJECT = 'Raw transaction';
+
+export type SubjectLabel = 'Link host' | 'Recipient' | 'Input';
 
 export const VERDICT_STYLE: Record<Verdict, { emoji: CardEmoji; label: CardLabel; color: number }> = {
   safe: { emoji: '🟢', label: 'No risky actions found', color: 0x2ecc71 },
@@ -90,16 +97,23 @@ function flagLines(flags: readonly Flag[]): FlagLine[] {
   return [...flags.filter((f) => f.severity === 'danger'), ...flags.filter((f) => f.severity !== 'danger')].map(line);
 }
 
-function subjectOf(link: ScanResult['link']): string {
+function subjectOf(link: ScanResult['link']): { label: SubjectLabel; value: string } {
   switch (link.kind) {
     case 'blink':
     case 'transaction-request':
-      return link.host ?? 'Unknown host';
+      return { label: 'Link host', value: link.host ?? 'Unknown host' };
     case 'transfer-request':
-      return link.recipient ?? 'Unknown recipient';
+      return { label: 'Recipient', value: link.recipient ?? 'Unknown recipient' };
     case 'raw-transaction':
-      return RAW_TRANSACTION_SUBJECT;
+      return { label: 'Input', value: RAW_TRANSACTION_SUBJECT };
   }
+}
+
+function balanceLinesOf(result: ScanResult): string[] {
+  const approves = result.flags.some((f) => f.ruleId === 'TOKEN_APPROVE');
+  if (result.balanceChanges.length === 0) return [approves ? APPROVE_NO_BALANCE_LINE : NO_BALANCE_LINE];
+  const lines = result.balanceChanges.map(balanceLine);
+  return approves ? [...lines, APPROVE_NOTE_LINE] : lines;
 }
 
 function clusterNotes(info: ScanResult['clusterInfo']): string[] {
@@ -112,14 +126,16 @@ function clusterNotes(info: ScanResult['clusterInfo']): string[] {
 
 export function toCardModel(result: ScanResult): CardModel {
   const style = VERDICT_STYLE[result.verdict];
+  const subject = subjectOf(result.link);
   const model: CardModel = {
     verdict: result.verdict,
     ...style,
     source: result.link.raw,
-    subject: subjectOf(result.link),
+    subjectLabel: subject.label,
+    subject: subject.value,
     cluster: result.cluster,
     clusterNotes: clusterNotes(result.clusterInfo),
-    balanceLines: result.balanceChanges.length === 0 ? [NO_BALANCE_LINE] : result.balanceChanges.map(balanceLine),
+    balanceLines: balanceLinesOf(result),
     flagLines: flagLines(result.flags),
     transferLines: result.transfers.map(transferLine),
     explorer: 'url' in result.explorer ? { url: result.explorer.url } : { none: true, text: NO_EXPLORER_LINE },

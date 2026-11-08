@@ -9,8 +9,8 @@ import { terminalSanitizer as clean } from './sanitize.ts';
 export function renderCardText(card: CardModel): string {
   const lines: string[] = [];
   lines.push(`Source: ${card.source === null ? RAW_TRANSACTION_SUBJECT : clean(card.source)}`);
-  lines.push(`Subject: ${clean(card.subject)}`);
-  if (card.title !== undefined) lines.push(`Title: ${clean(card.title)}`);
+  lines.push(`${card.subjectLabel}: ${clean(card.subject)}`);
+  if (card.title !== undefined) lines.push(`Link says: "${clean(card.title)}"`);
   const notes = [...card.clusterNotes];
   if (card.unsupportedClusterValue !== undefined) notes.push(`value: ${clean(card.unsupportedClusterValue)}`);
   lines.push(`Cluster: ${card.cluster}${notes.length > 0 ? ` (${notes.join('; ')})` : ''}`);

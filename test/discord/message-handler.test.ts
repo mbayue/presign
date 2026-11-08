@@ -77,7 +77,7 @@ describe('handleMessage', () => {
     };
     await handleMessage(message, ctx(scan).ctx, { semaphore: new Semaphore(6), log: captureLog().log });
     const embeds = calls.replies[0]!.embeds as { data: { fields?: { name: string; value: string }[] } }[];
-    const subjects = embeds.map((e) => e.data.fields?.find((f) => f.name === 'Subject')?.value);
+    const subjects = embeds.map((e) => e.data.fields?.find((f) => f.name === 'Link host')?.value);
     expect(subjects).toEqual(['a.example', 'b.example']);
   });
 

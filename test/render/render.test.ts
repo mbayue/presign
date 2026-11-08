@@ -1,7 +1,13 @@
 import { describe, expect, test } from 'bun:test';
 import { embedLength, renderEmbed } from '../../src/discord/embed.ts';
 import { flagTemplates } from '../../src/risk/flags.ts';
-import { NO_BALANCE_LINE, NO_FLAGS_LINE, toCardModel } from '../../src/render/card-model.ts';
+import {
+  APPROVE_NO_BALANCE_LINE,
+  APPROVE_NOTE_LINE,
+  NO_BALANCE_LINE,
+  NO_FLAGS_LINE,
+  toCardModel,
+} from '../../src/render/card-model.ts';
 import { discordSanitizer, terminalSanitizer } from '../../src/render/sanitize.ts';
 import { renderText } from '../../src/render/text-card.ts';
 import { untrusted, type Flag } from '../../src/scan/types.ts';
@@ -90,7 +96,7 @@ describe('toCardModel', () => {
     expect(card.subject).toBe(DELEGATE);
     expect(card.flagLines.map((f) => f.severity)).toEqual(['danger', 'caution', 'caution']);
     expect(card.flagLines[1]!.text).toBe(flags[0]!.description);
-    expect(card.balanceLines).toEqual(['Sends 0.001 SOL', `Receives 5 base units of ${MINT}`]);
+    expect(card.balanceLines).toEqual(['Sends 0.001 SOL', `Receives 5 base units of ${MINT}`, APPROVE_NOTE_LINE]);
     expect(card.clusterNotes).toEqual(['Fell back from mainnet', 'Unsupported cluster value ignored']);
     expect(card.unsupportedClusterValue).toBe(untrusted('testnet'));
     expect(card.explorer).toEqual({ none: true, text: 'No Explorer link available' });
@@ -116,10 +122,11 @@ describe('renderText', () => {
     );
     for (const f of flags) expect(text).toContain(`[${f.severity}] ${f.ruleId}: ${f.description}`);
     expect(text).toContain('Source: https://evil.com/x');
-    expect(text).toContain('Title: Free NFT');
+    expect(text).toContain('Link host: evil.com');
+    expect(text).toContain('Link says: "Free NFT"');
     expect(text).toContain('Cluster: devnet');
     expect(text).toContain('Verdict: 🔴 Danger');
-    expect(text).toContain(NO_BALANCE_LINE);
+    expect(text).toContain(APPROVE_NO_BALANCE_LINE);
     expect(text).toContain('AI summary (AI-generated): Summary here.');
     expect(text).toContain('Explorer: https://explorer.solana.com/');
     expect(text).toContain('does not guarantee safety');
@@ -133,7 +140,12 @@ describe('renderEmbed', () => {
     expect(embed.data.color).toBe(0xf1c40f);
     expect(embed.data.title).toBe('🟡 Caution');
     const names = (embed.data.fields ?? []).map((f) => f.name);
-    expect(names).toEqual(['Subject', 'Cluster', 'Balance changes', 'Flags', 'AI summary (AI-generated)', 'Explorer']);
+    expect(names).toEqual(['Link host', 'Cluster', 'Balance changes', 'Flags', 'AI summary (AI-generated)', 'Explorer']);
+  });
+
+  test('the link title is quoted and labelled as the link\'s own words', () => {
+    const embed = renderEmbed(toCardModel(scanResult({ metadata: { title: untrusted('Claim your free airdrop') } })));
+    expect(embed.data.description).toBe('Link says: “Claim your free airdrop”');
   });
 
   test('flag overflow stays within budget, danger first, counts the rest', () => {

@@ -45,13 +45,14 @@ const fieldLength = (f: Field): number => f.name.length + f.value.length;
 
 export function renderEmbed(card: CardModel, budget: number = CARD_BUDGET): EmbedBuilder {
   const title = `${card.emoji} ${card.label}`;
-  const description = card.title === undefined ? undefined : clean(card.title);
+  // The link's own title is the scammer's words, so it is quoted and labelled as such.
+  const description = card.title === undefined ? undefined : `Link says: “${clean(card.title)}”`;
 
   const notes = [...card.clusterNotes];
   if (card.unsupportedClusterValue !== undefined) notes.push(`value: ${clean(card.unsupportedClusterValue)}`);
 
   const head: Field[] = [
-    { name: 'Subject', value: clean(card.subject) },
+    { name: card.subjectLabel, value: clean(card.subject) },
     { name: 'Cluster', value: notes.length > 0 ? `${card.cluster} (${notes.join('; ')})` : card.cluster },
   ];
   const tail: Field[] = [];
