@@ -101,6 +101,12 @@ Settings are stored in SQLite under `data/`.
 
 ## Demo walkthrough
 
+### Try it in Discord
+
+[Add Presign to your server](https://discord.com/oauth2/authorize?client_id=979619767226892318&scope=bot+applications.commands&permissions=93184), then post a blink in a channel the bot can read, for example `https://solana-actions.vercel.app/memo?cluster=devnet`. The bot replies with a safety card. See [Real blinks](#real-blinks) for more links.
+
+### Run it locally
+
 The demo server serves three devnet blinks and returns unsigned transactions only. It needs no RPC and no keys.
 
 ```sh
