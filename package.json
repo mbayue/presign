@@ -1,0 +1,29 @@
+{
+  "name": "solana-scanner-bot",
+  "version": "0.1.0",
+  "description": "Discord bot that simulates Solana blinks and Solana Pay links and warns before anyone signs",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "bun --watch src/index.ts",
+    "start": "bun src/index.ts",
+    "scan": "bun src/cli/scan.ts",
+    "demo:server": "bun demo/server.ts",
+    "test": "bun test",
+    "check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@solana-program/memo": "^0.16.0",
+    "@solana-program/system": "^0.16.0",
+    "@solana-program/token": "^0.18.0",
+    "@solana-program/token-2022": "^0.20.1",
+    "@solana/kit": "^8.6.0",
+    "discord.js": "^14.28.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.4.4",
+    "fast-check": "^4.10.2",
+    "typescript": "^6.0.3"
+  }
+}
