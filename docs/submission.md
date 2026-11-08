@@ -1,6 +1,6 @@
 # Presign: MLH Solana Hackathon submission
 
-Copy each section into the matching field on MLH Challenges. Track: **AI Track** (also eligible for Top 3 Overall).
+The Solana Hackathon takes submissions on MLH (no Devpost). Each section below matches a field on the MLH project form. Prize categories to enter: **AI Track Top Prize**; **Top 3 Overall** covers every eligible submission.
 
 ## Project name
 
@@ -60,7 +60,7 @@ Most Solana scams don't break anything technical. They get people to sign a tran
 ## Accomplishments we're proud of
 
 - The drainer, the prompt-injection drainer and a safe tip are scanned live in Discord with correct verdicts in about 2 seconds.
-- A real mainnet blink on a third-party site is detected through `actions.json`, fetched, decoded and simulated.
+- Real third-party blinks from the Solana Foundation's example site (`solana-actions.vercel.app`) are detected through `actions.json`, fetched, decoded and simulated, on both mainnet and devnet. With a funded devnet wallet they come back 🟢.
 - The bot never signs or holds a key, and an AI that's tricked still can't change the verdict.
 
 ## What we learned
@@ -79,7 +79,20 @@ Most Solana scams don't break anything technical. They get people to sign a tran
 
 TypeScript, Bun, discord.js, @solana/kit, Solana Actions / blinks, Solana Pay, SPL Token, Token-2022, zod, fast-check, Vultr AI (OpenAI-compatible API)
 
+## AI tools used to build it
+
+MLH requires stating how AI was used.
+
+- **Runtime AI API:** Vultr Inference (OpenAI-compatible), models `minimax-m3.1-flash` and `mimo-v2.6-flash`, for the card summary only.
+- **Coding:** Kiro (AI coding agent) running Claude Opus 5.5 wrote most of the code, tests and docs under the author's direction and review during the event, with the Solana Foundation's `solana-dev` agent skill and the Solana Developer MCP as references.
+
+## Demo video
+
+MLH's rules for online events: **2 minutes or less**, **recorded this weekend**, and **name the hackathon at the start** (for example: "This is Presign, built for the MLH Solana Hackathon."). Upload to YouTube (Public is safest), Vimeo or Loom and paste the link.
+
+Shots that work well, in order: the problem; the drainer posted and caught 🔴; the prompt-injection link still 🔴; real `solana-actions.vercel.app` blinks (with `?cluster=devnet`) coming back 🟢; `/scanner settings moderation_action:delete` removing a drainer message; how it works.
+
 ## Links
 
-- Repository: `<add after pushing>`
+- Repository: `<add after pushing>` (must stay public after the event)
 - Demo video: `<add after recording>`
