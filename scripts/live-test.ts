@@ -19,13 +19,19 @@ import { createClient } from '../src/discord/client.ts';
 import { adaptMessage, handleMessage, type HandlerContext } from '../src/discord/message-handler.ts';
 import { createScanner } from '../src/scan/pipeline.ts';
 import { createMemorySettingsStore } from '../src/settings/store.ts';
-import { defaultSettings } from '../src/settings/types.ts';
+import { defaultSettings, MODERATION_ACTIONS, type ModerationAction } from '../src/settings/types.ts';
 
-const [guildId, channelId, minutesArg, ...customLinks] = process.argv.slice(2);
-if (!guildId || !channelId) {
-  process.stderr.write('Usage: bun scripts/live-test.ts <guildId> <channelId> [minutes] [link ...]\n');
+const args = process.argv.slice(2);
+const listenOnly = args.includes('--listen');
+const actionArg = args.find((a) => a.startsWith('--action='))?.slice('--action='.length);
+const [guildId, channelId, minutesArg, ...customLinks] = args.filter((a) => !a.startsWith('--'));
+if (!guildId || !channelId || (actionArg !== undefined && !MODERATION_ACTIONS.includes(actionArg as ModerationAction))) {
+  process.stderr.write(
+    'Usage: bun scripts/live-test.ts <guildId> <channelId> [minutes] [link ...] [--listen] [--action=warn|hide|delete]\n',
+  );
   process.exit(2);
 }
+const moderationAction: ModerationAction = (actionArg as ModerationAction | undefined) ?? 'warn';
 const minutes = Number(minutesArg ?? '15');
 
 const config = loadConfig();
@@ -35,7 +41,7 @@ if (config.discordToken === '') {
 }
 
 const store = createMemorySettingsStore({
-  initial: [{ ...defaultSettings(guildId), watchedChannelIds: [channelId] }],
+  initial: [{ ...defaultSettings(guildId), moderationAction, watchedChannelIds: [channelId] }],
 });
 const ctx: HandlerContext = {
   store,
@@ -69,21 +75,23 @@ client.once(Events.ClientReady, async () => {
     await client.destroy();
     process.exit(1);
   }
-  process.stdout.write(`guild: ${guild.name}; channel: #${(channel as TextChannel).name}\n`);
+  process.stdout.write(`guild: ${guild.name}; channel: #${(channel as TextChannel).name}; on 🔴: ${moderationAction}\n`);
 
-  const demo =
-    customLinks.length > 0
-      ? ['Presign live test:', ...customLinks].join('\n')
-      : [
-          'Presign live test (devnet demo links):',
-          'solana-action:http://127.0.0.1:8787/api/actions/drainer?cluster=devnet',
-          'solana-action:http://127.0.0.1:8787/api/actions/safe?cluster=devnet',
-          'solana-action:http://127.0.0.1:8787/api/actions/injection?cluster=devnet',
-        ].join('\n');
-  const sent = await (channel as TextChannel).send({ content: demo, allowedMentions: { parse: [] } });
-  // The bot's own post would be ignored by the bot-author gate; run the real handler on it anyway.
-  const adapted = { ...adaptMessage(sent as Message<true>), authorIsBot: false };
-  report('demo message', await handleMessage(adapted, ctx));
+  if (!listenOnly) {
+    const demo =
+      customLinks.length > 0
+        ? ['Presign live test:', ...customLinks].join('\n')
+        : [
+            'Presign live test (devnet demo links):',
+            'solana-action:http://127.0.0.1:8787/api/actions/drainer?cluster=devnet',
+            'solana-action:http://127.0.0.1:8787/api/actions/safe?cluster=devnet',
+            'solana-action:http://127.0.0.1:8787/api/actions/injection?cluster=devnet',
+          ].join('\n');
+    const sent = await (channel as TextChannel).send({ content: demo, allowedMentions: { parse: [] } });
+    // The bot's own post would be ignored by the bot-author gate; run the real handler on it anyway.
+    const adapted = { ...adaptMessage(sent as Message<true>), authorIsBot: false };
+    report('demo message', await handleMessage(adapted, ctx));
+  }
   process.stdout.write(`listening in #${(channel as TextChannel).name} for ${minutes} min\n`);
 });
 
