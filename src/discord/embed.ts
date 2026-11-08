@@ -11,7 +11,8 @@ import { discordEscape, discordSanitizer as clean } from '../render/sanitize.ts'
 
 export const CARD_BUDGET = 1_900;
 const FIELD_VALUE_MAX = 1_024;
-const AI_SUMMARY_MAX = 300;
+/** postprocess() caps the summary at 300 raw characters; leave room for markdown escapes. */
+const AI_SUMMARY_MAX = 420;
 const BALANCE_SHARE = 400;
 const TRANSFER_SHARE = 250;
 const FLAG_RESERVE = 400;
