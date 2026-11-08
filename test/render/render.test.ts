@@ -148,3 +148,17 @@ describe('renderEmbed', () => {
     expect(value).toMatch(/…and \d+ more flags$/);
   });
 });
+
+describe('renderEmbed embed URL', () => {
+  // Discord merges embeds in one message that share a URL, which hid one of two
+  // identical-transaction cards in the live test. The Explorer link must stay in a field.
+  test('cards with the same Explorer link have no embed-level URL', () => {
+    const url = 'https://explorer.solana.com/tx/inspector?cluster=devnet&message=abc';
+    const result = scanResult({ explorer: { url } });
+    const a = renderEmbed(toCardModel(result)).toJSON();
+    const b = renderEmbed(toCardModel(result)).toJSON();
+    expect(a.url).toBeUndefined();
+    expect(b.url).toBeUndefined();
+    expect(a.fields?.find((f) => f.name === 'Explorer')?.value).toContain(url);
+  });
+});

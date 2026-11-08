@@ -103,7 +103,9 @@ export function renderEmbed(card: CardModel, budget: number = CARD_BUDGET): Embe
     .setTitle(title)
     .addFields(...head, ...middle, ...tail)
     .setFooter({ text: card.footer });
-  if ('url' in card.explorer) embed.setURL(card.explorer.url);
+  // No embed-level URL: Discord merges embeds in one message that share a URL,
+  // so two links with the same transaction would collapse into one card. The
+  // Explorer link stays in its own field.
   if (description !== undefined && description.length > 0) embed.setDescription(description);
   return embed;
 }
